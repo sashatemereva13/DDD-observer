@@ -19,6 +19,8 @@ type Money = {
 
 type Email = string & { readonly __brand: unique symbol };
 
+type ProjectId = string & { readonly __brand: unique symbol };
+
 // smart constructors
 function createEmail(value: string): Email {
   if (!value.includes("@")) {
@@ -42,42 +44,41 @@ function createMoney(amount: number, currency: Currency): Money {
 }
 
 type Project = {
+  id: ProjectId;
   clientName: string;
   clientEmail: Email;
   price: Money;
   immersive: boolean;
+  status: "Draft" | "DesignApproved" | "Build" | "Deployed";
 };
 
-const project1: Project = {
-  clientName: "Yann",
-  clientEmail: createEmail("yan@mail.com"),
-  price: createMoney(1000, "EUR"),
-  immersive: true,
-};
-
-const project2: Project = {
-  clientName: "Ilias",
-  clientEmail: createEmail("ilias@mail.com"),
-  price: createMoney(2000, "EUR"),
-  immersive: true,
-};
-
-/* 2.  constructor function  */
-// OOP
-// a constructor function creates a new object and sets its properties
-
-// modify this code for testing !!
-// this replicates user input
-
-try {
-  const project3: Project = {
-    clientName: "Karan",
-    clientEmail: createEmail("karanihei.com"),
-    price: createMoney(-3000, "EUR"),
-    immersive: true,
+function createProject(
+  name: string,
+  email: string,
+  price: number,
+  immersive: boolean,
+): Project {
+  return {
+    id: uuidv4() as ProjectId,
+    clientName: name,
+    clientEmail: createEmail(email),
+    price: createMoney(price, "EUR"),
+    immersive,
+    status: "Draft",
   };
-
-  console.log(project3);
-} catch (error) {
-  console.error("Error creating project3:", (error as Error).message);
 }
+
+const project1 = createProject(
+	"Yann",
+	"yan@mail.com",
+	1000,
+	true
+);
+
+const project2 = createProject(
+	"Ilias",
+	"ilias@mail.com",
+	2000,
+	true
+);
+
