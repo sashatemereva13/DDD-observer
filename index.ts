@@ -1,14 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 
-type ProjectEvent =
-  | { type: "ProjectCreated"; projectId: ProjectId }
-  | { type: "DesignApproved"; projectId: ProjectId }
-  | { type: "BuildStarted"; projectId: ProjectId }
-  | { type: "ProjectReadyToDeploy"; projectId: ProjectId }
-  | { type: "ProjectDeployed"; projectId: ProjectId }
-  | { type: "DiscoveryCompleted"; projectId: ProjectId };
-
-type Observer = (event: ProjectEvent) => void;
+// =============================== //
+//         TYPE DEFINITIONS       //
+// ============================== //
 
 type Price = number & { readonly __brand: unique symbol };
 type Currency = "EUR";
@@ -20,7 +14,10 @@ type Money = {
 type Email = string & { readonly __brand: unique symbol };
 type ProjectId = string & { readonly __brand: unique symbol };
 
-// smart constructors
+// =============================== //
+//        FACTORY FUNCTIONS       //
+// ============================== //
+
 function createEmail(value: string): Email {
   if (!value.includes("@")) {
     throw new Error("Invalid email");
@@ -78,6 +75,9 @@ function deployProject(project: Project): Project {
   return updatedProject;
 }
 
+// =============================== //
+//        ENTITY DEFINITION       //
+// ============================== //
 type Project = {
   id: ProjectId;
   clientName: string;
@@ -110,6 +110,24 @@ function createProject(
   });
   return project;
 }
+
+// =============================== //
+//         EVENT TYPES            //
+// ============================== //
+
+type ProjectEvent =
+  | { type: "ProjectCreated"; projectId: ProjectId }
+  | { type: "DesignApproved"; projectId: ProjectId }
+  | { type: "BuildStarted"; projectId: ProjectId }
+  | { type: "ProjectReadyToDeploy"; projectId: ProjectId }
+  | { type: "ProjectDeployed"; projectId: ProjectId }
+  | { type: "DiscoveryCompleted"; projectId: ProjectId };
+
+type Observer = (event: ProjectEvent) => void;
+
+// =============================== //
+//         OBSERVERS              //
+// ============================== //
 
 const loggerObserver: Observer = (event) => {
   console.log("Event occured:", event.type);
